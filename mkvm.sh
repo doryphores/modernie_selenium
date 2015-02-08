@@ -48,7 +48,7 @@ copyto() {
   then
     echo "Local file '${2}${1}' doesn't exist"
   fi
-  execute "VBoxManage guestcontrol \"${vm_name}\" copyto \"${2}${1}\" \"${3}${1}\" --username 'IEUser' --password 'Passw0rd!'"
+  execute "VBoxManage guestcontrol \"${vm_name}\" copyto \"${2}${1}\" ${3}${1} --username 'IEUser' --password 'Passw0rd!'"
 }
 
 # Loop VBoxManage guestcontrol commands as they are unreliable.
@@ -279,7 +279,7 @@ disable_uac() {
 # Start the VM; Wait some seconds afterwards to give the VM time to start up completely.
 start_vm() {
   log "Starting VM ${vm_name}..."
-  VBoxManage startvm "${vm_name}" --type headless
+  VBoxManage startvm "${vm_name}" # --type headless
   chk fatal $? "Could not start VM"
   waiting 60
 }
@@ -312,7 +312,7 @@ disable_firewall() {
 
 # Create C:\Temp\; Most Functions who copy files to the VM are relying on this folder and will fail is he doesn't exists.
 create_temp_path() {
-  vm_temp="C:\\Temp\\"
+  vm_temp="C:/Temp/"
   log "Creating ${vm_temp}..."
   execute "VBoxManage guestcontrol \"${vm_name}\" createdirectory \"${vm_temp}\" --username 'IEUser' --password 'Passw0rd!'"
   chk fatal $? "Could not create ${vm_temp}"
@@ -380,7 +380,7 @@ start_selenium_xp() {
 
 start_selenium_w7() {
   #execute "VBoxManage guestcontrol \"${vm_name}\" copyto \"${selenium_path}selenium.bat\" 'C:/ProgramData/Microsoft/Windows/Start Menu/Programs/Startup/' --username 'IEUser' --password 'Passw0rd!'"
-  copyto "selenium.bat" "${selenium_path}" 'C:/ProgramData/Microsoft/Windows/Start Menu/Programs/Startup/'
+  copyto "selenium.bat" "${selenium_path}" "'C:/ProgramData/Microsoft/Windows/Start Menu/Programs/Startup/'"
   chk error $? "Could not copy Selenium-Startup-File"
 }
 
@@ -431,7 +431,7 @@ ie11_driver_reg() {
 # Install Selenium
 install_selenium() {
   log "Creating C:/selenium/..."
-  execute "VBoxManage guestcontrol \"${vm_name}\" createdirectory C:/selenium/ --username 'IEUser' --password 'Passw0rd!'"
+  execute "VBoxManage guestcontrol \"${vm_name}\" createdirectory \"C:\\selenium\" --username 'IEUser' --password 'Passw0rd!'"
   chk fatal $? "Could not create C:/Selenium/"
   log "Installing Selenium..."
   #execute "VBoxManage guestcontrol \"${vm_name}\" copyto \"${selenium_path}${selenium_jar}\" C:/selenium/ --username 'IEUser' --password 'Passw0rd!'"
